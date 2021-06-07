@@ -9,15 +9,19 @@ from scipy.integrate import odeint
 st.title("A Visualisation of the Double Pendulum")
 st.sidebar.title("List of Parameters")
 time_taken = st.sidebar.slider("time taken for simulation",0,100,50)
-m1 = st.sidebar.number_input("input mass 1: ", min_value = 0)
-m2 = st.sidebar.number_input("input mass 2: ", min_value = 0)
-l1 = st.sidebar.number_input("input length 1: ", min_value = 0)
-l2 = st.sidebar.number_input("input length 2: ", min_value = 0)
-g = st.sidebar.number_input("input gravitational field strength: ")
-initial_theta_1 = np.radians(st.sidebar.number_input("input inital displacement of theta 1: "))
-initial_theta_2 = np.radians(st.sidebar.number_input("input inital displacement of theta 2: "))
-initial_vel_theta_1 = st.sidebar.number_input("input inital velocity of theta 1: ")
-initial_vel_theta_2 = st.sidebar.number_input("input inital velocity of theta 2: ")
+m1 = st.sidebar.number_input("input mass 1: ", min_value = 0, value = 1)
+m2 = st.sidebar.number_input("input mass 2: ", min_value = 0, value = 1)
+l1 = st.sidebar.number_input("input length 1: ", min_value = 0, value = 1)
+l2 = st.sidebar.number_input("input length 2: ", min_value = 0, value = 1)
+g = st.sidebar.number_input("input gravitational field strength: ", value = 9.8)
+initial_theta_1 = np.radians(st.sidebar.number_input("input inital displacement 0f theta 1: "
+                                                     , value = 90))
+initial_theta_2 = np.radians(st.sidebar.number_input("input inital displacement of theta 2: "
+                                                     , value = 90))
+initial_vel_theta_1 = st.sidebar.number_input("input inital velocity of theta 1: "
+                                              , value = 0)
+initial_vel_theta_2 = st.sidebar.number_input("input inital velocity of theta 2: "
+                                              , value = 0)
 paths = st.sidebar.button("display paths")
 dt = 0.06
 
