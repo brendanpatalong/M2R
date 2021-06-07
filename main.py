@@ -19,7 +19,7 @@ initial_theta_2 = np.radians(st.sidebar.number_input("input inital displacement 
 initial_vel_theta_1 = st.sidebar.number_input("input inital velocity of theta 1: ")
 initial_vel_theta_2 = st.sidebar.number_input("input inital velocity of theta 2: ")
 paths = st.sidebar.button("display paths")
-dt = 0.1
+dt = 0.06
 
 initial = np.array([initial_theta_1, initial_theta_2, initial_vel_theta_1,
                     initial_vel_theta_2])
@@ -67,7 +67,7 @@ sub = fig.add_subplot(autoscale_on=False, xlim=(-(p[2]+p[3]+1),(p[2]+p[3]+1) ),
 sub.set_aspect('equal')
 line1, = sub.plot([], [], "o-", lw=1.7, c="black")
 line2, = sub.plot([], [], "o-", lw=1.7, c="black")
-path1, = sub.plot([], [], ",-", lw=0.8, c ="lightblue")
+path1, = sub.plot([], [], ",-", lw=0.8, c ="red")
 path2, = sub.plot([], [], ",-", lw=0.8, c ="blue")
 
 def realisation(i):
@@ -80,8 +80,8 @@ def realisation(i):
     i is the given time instance
     """
     if paths:
-        path2.set_data(x_2[:i],y_2[:i])
-        path1.set_data(x_1[:i],y_1[:i])
+        path2.set_data(x_2[max(0,i-10):i],y_2[max(0,i-10):i])
+        path1.set_data(x_1[max(0,i-10):i],y_1[max(0,i-10):i])
     line1.set_data([0,x_1[i]],[0, y_1[i]])
     line2.set_data([x_1[i],x_2[i]],[y_1[i],y_2[i]])
     return path1, path2, line1, line2
