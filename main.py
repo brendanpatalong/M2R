@@ -8,7 +8,7 @@ from scipy.integrate import odeint
 # use streamlit functions to \take data in from the user
 st.title("A Visualisation of the Double Pendulum")
 st.sidebar.title("List of Parameters")
-time_taken = st.sidebar.slider("time taken for simulation",0,100,50)
+time_taken = st.sidebar.slider("time taken for simulation", 0, 100, 50)
 m1 = st.sidebar.number_input("input mass 1: ", min_value = 0, value = 1)
 m2 = st.sidebar.number_input("input mass 2: ", min_value = 0, value = 1)
 l1 = st.sidebar.number_input("input length 1: ", min_value = 0, value = 1)
@@ -22,8 +22,8 @@ initial_vel_theta_1 = st.sidebar.number_input("input inital velocity of theta 1:
                                               , value = 0)
 initial_vel_theta_2 = st.sidebar.number_input("input inital velocity of theta 2: "
                                               , value = 0)
-paths = st.sidebar.button("display paths")
-dt = 0.06
+paths = st.sidebar.button("hide paths")
+dt = 0.02
 
 initial = np.array([initial_theta_1, initial_theta_2, initial_vel_theta_1,
                     initial_vel_theta_2])
@@ -88,9 +88,9 @@ def realisation(i):
     ----
     i is the given time instance
     """
-    if paths:
-        path2.set_data(x_2[max(0, i-10):i], y_2[max(0, i-10):i])
-        path1.set_data(x_1[max(0, i-10):i], y_1[max(0, i-10):i])
+    if not paths:
+        path2.set_data(x_2[max(0, i-150):i], y_2[max(0, i-150):i])
+        path1.set_data(x_1[max(0, i-150):i], y_1[max(0, i-150):i])
     line1.set_data([0, x_1[i]], [0, y_1[i]])
     line2.set_data([x_1[i], x_2[i]], [y_1[i], y_2[i]])
     return path1, path2, line1, line2
