@@ -211,16 +211,26 @@ with st.beta_container():
                                             interval = dt*1000, blit=True)
 
         components.html(animator.to_jshtml(), height=500)
-
+    
 
     elif dropbox == "Linearization about (0,0,0,0)":
+        time_period = st.slider("enter run time: ", 0, 100, 50)
+        
         A = np.array([[-p[4] * (p[0] + p[1]) / (p[0] * p[2]), p[4] * p[1]/(p[0] * p[2])],
-                      [p[4] * (p[0] + p[1])/(p[0] * p[3]), p[4] * (p[1] + p[0])/(p[0] * p[3])]])
+                      [p[4] * (p[0] + p[1])/(p[0] * p[3]), -p[4] * (p[1] + p[0])/(p[0] * p[3])]])
         ev = np.linalg.eig(A)
-        lamb = np.sqrt(ev[0])
-        V = np.array([[ev[1][0]], [ev[1][1]]])
-        coefs_1 = np.linalg.solve(V, np.array([initial1[0],initial1[1]]))
-        t = np.linspace
+        coefs1 = np.linalg.solve(ev[1], np.array([initial1[0],initial1[1]]))
+        coefs2 = np.linalg.solve(ev[1], np.array([initial1[2],initial1[3]]))
+        lamb = np.sqrt(-ev[0])
+        t = np.linspace(0, time_period, 10001)
+        theta1 = coefs1[0] * ev[1][0][0] * np.cos(lamb[0] * t) + coefs1[1] * ev[1][0][1] * np.cos(lamb[1] * t) +\
+                 coefs2[0] * ev[1][0][0] * np.sin(lamb[0] * t) + coefs2[1] * ev[1][0][1] * np.sin(lamb[1] * t)
+        theta2 = coefs1[0] * ev[1][1][0] * np.cos(lamb[0] * t) + coefs1[1] * ev[1][1][1] * np.cos(lamb[1] * t) + \
+                 coefs2[0] * ev[1][1][0] * np.sin(lamb[0] * t) + coefs2[1] * ev[1][1][1] * np.sin(lamb[1] * t)
+        fig_linear = plt.figure(figsize = (5, 4))
+        plt.plot(t, theta1)
+        plt.plot(t, theta2)
+        st.pyplot(fig_linear)
 
     elif dropbox == "Phase Portraits":
         time_taken = st.slider("Total Time", 100, 1000, 100)
