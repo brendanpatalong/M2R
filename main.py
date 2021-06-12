@@ -35,7 +35,9 @@ with st.beta_container():
     st.header("Introduction")
     st.markdown("This website is part of our group's M2R research project on the double pendulum at Imperial College London."
                 " Group members include Brendan Patalong, Frank Shang, Yian Zeng, James Hyrb and Mingke Peng with project supervisor"
-                " Dr Philip Ramsden. The aim of this project is to discuss further the behaviour of the double pendulum  dynamical system.")   
+                " Dr Philip Ramsden. The aim of this project is to discuss further the behaviour of the double pendulum  dynamical system"
+                " and use various mathematical and computational methods to determine under what conditions the system becomes chaotic or"
+                " displays some form of periodicity.")   
 
 def derivative(v, t):
     deriv = [0, 0, 0, 0]
@@ -154,14 +156,16 @@ def d_wrapped(theta_1, theta_2):
 
 with st.beta_container():
     st.header("Figures")
-    st.markdown("For further analysis ")
+    st.markdown("In this section the user can choose to display plots or animations for any given set of parameter values and initial"
+                " conditions which can be changed in the sidebar. These plots relate to some of the computational techniques used for"
+                " analysing the double pendulum system and other more general dynamical systems.")
     dropbox = st.selectbox(label="Select a chart",options=("Double Pendulum Animation", "Linearization about (0,0,0,0)", 
-                                "Phase Portraits", "Fast Fourier Transform", "Poincare Sections","Lyapunov Exponents"), 
+                                "Phase Portraits", "Fast Fourier Transform", "Poincare Sections","Maximal Lyapunov Exponents"), 
                                 index = 0)
     
 with st.beta_container():
     if dropbox == "Double Pendulum Animation":
-        time_taken = st.slider("time taken for animation", 0, 100, 10)
+        time_taken = st.slider("enter animation run time:", 0, 100, 10)
         # use streamlit functions to take data inputs from user/
         time_array = np.arange(0, time_taken, dt)
         soln_1 = odeint(derivative, initial1, time_array)
@@ -214,6 +218,11 @@ with st.beta_container():
     
 
     elif dropbox == "Linearization about (0,0,0,0)":
+        st.markdown("The following figure shows the linearized system about the stable fixed point "r"$(0,0,0,0)$"
+                    ". Note this linearization is only an accurate approximation for small angles or for initial"
+                    " conditions close to the origin. Also despite this being a linearisation it disaplys some interesting"
+                    " behaviour as for different parameter values the solution of the linearized solution can either be quasiperiodic but"
+                    " can be periodic as well.")
         time_period = st.slider("enter run time: ", 0, 100, 50)
         
         A = np.array([[-p[4] * (p[0] + p[1]) / (p[0] * p[2]), p[4] * p[1]/(p[0] * p[2])],
@@ -227,9 +236,13 @@ with st.beta_container():
                  coefs2[0] * ev[1][0][0] * np.sin(lamb[0] * t) + coefs2[1] * ev[1][0][1] * np.sin(lamb[1] * t)
         theta2 = coefs1[0] * ev[1][1][0] * np.cos(lamb[0] * t) + coefs1[1] * ev[1][1][1] * np.cos(lamb[1] * t) + \
                  coefs2[0] * ev[1][1][0] * np.sin(lamb[0] * t) + coefs2[1] * ev[1][1][1] * np.sin(lamb[1] * t)
+        
         fig_linear = plt.figure(figsize = (5, 4))
-        plt.plot(t, theta1)
-        plt.plot(t, theta2)
+        plt.plot(t, theta1, label=r"$\theta_1$")
+        plt.plot(t, theta2, label=r"$\theta_2$")
+        plt.xlabel("Time, t")
+        plt.ylabel("Angular Displacements")
+        plt.legend()
         st.pyplot(fig_linear)
 
     elif dropbox == "Phase Portraits":
