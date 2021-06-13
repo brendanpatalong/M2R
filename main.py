@@ -7,17 +7,26 @@ from scipy.integrate import odeint
 
 st.title("A Visualisation of the Double Pendulum")
 st.sidebar.title("List of Parameters")
+angles = st.sidebar.selectbox(label="Angle units", options=("Radians", "Degrees"), index = 0)
 m1 = st.sidebar.number_input("input mass 1: ", min_value = 0, value = 1)
 m2 = st.sidebar.number_input("input mass 2: ", min_value = 0, value = 1)
 l1 = st.sidebar.number_input("input length 1: ", min_value = 0, value = 1)
 l2 = st.sidebar.number_input("input length 2: ", min_value = 0, value = 1)
 g = st.sidebar.number_input("input gravitational field strength: ", value = 9.8)
-initial_theta_1 = np.radians(st.sidebar.number_input("input inital displacement 0f theta 1: "
-                                                     , value = 90, min_value = -180
-                                                     , max_value = 180 ))
-initial_theta_2 = np.radians(st.sidebar.number_input("input inital displacement of theta 2: "
-                                                     , value = 120, min_value = -180
-                                                     , max_value = 180 ))
+if angles == "Radians":
+    initial_theta_1 = st.sidebar.number_input("input inital displacement 0f theta 1: "
+                                                     , value = np.pi / 2, min_value = - np.pi
+                                                     , max_value = np.pi, step = 1e-6)
+    initial_theta_2 = st.sidebar.number_input("input inital displacement 0f theta 1: "
+                                                     , value = np.pi * 2 / 3, min_value = - np.pi
+                                                     , max_value = np.pi, step = 1e-6)
+elif angles == "Degrees":
+    initial_theta_1 = np.radians(st.sidebar.number_input("input inital displacement 0f theta 1: "
+                                                        , value = 90, min_value = -180
+                                                        , max_value = 180 ))
+    initial_theta_2 = np.radians(st.sidebar.number_input("input inital displacement of theta 2: "
+                                                        , value = 120, min_value = -180
+                                                        , max_value = 180 ))
 initial_vel_theta_1 = st.sidebar.number_input("input inital velocity of theta 1: "
                                               , value = 0)
 initial_vel_theta_2 = st.sidebar.number_input("input initial velocity of theta 2: "
@@ -54,7 +63,6 @@ def derivative(v, t):
     deriv[2] = det ** (-1) * (D * f_1 - B * f_2)
     deriv[3] = det ** (-1) * (A * f_2 - B * f_1)
     return deriv
-
 
 def wrapped(theta, other):
     """Wrap angular displacement to obtain range of -pi to pi for infinite cylinder plot.
@@ -97,7 +105,6 @@ def wrapped(theta, other):
         r += 1
 
     return [theta_splitted, other_splitted]
-
 
 def d_wrapped(theta_1, theta_2):
     """Wrap angular displacements theta_1, theta_2 to obtain range of -pi to pi for torus plot.
@@ -153,6 +160,53 @@ def d_wrapped(theta_1, theta_2):
         r += 1
         
     return [theta_1_splitted, theta_2_splitted]
+
+def wrapped2(theta):
+    """Wrap angular displacement to obtain range of -pi to pi for infinite cylinder plot.
+    
+    Parameters
+    ----------
+    theta : array
+        An output from ODE solver (theta_1 or theta_2)
+
+    Returns
+    -------
+    list
+        List of theta values in range -pi to pi
+    """
+    
+    theta_wrapped = [None] * len(theta)
+    for x in enumerate(theta):
+        if x[1] > 0:
+            if (x[1] % (2 * np.pi)) > np.pi:
+                theta_wrapped[x[0]] = x[1] % (2 * np.pi) -  2 * np.pi
+            else:
+                 theta_wrapped[x[0]] = x[1] % (2 * np.pi)
+        else:
+            if (x[1] % (2 * np.pi)) > np.pi:
+                theta_wrapped[x[0]] = x[1] % (2 * np.pi) -  2 * np.pi
+            else:
+                theta_wrapped[x[0]] = x[1] % (2 * np.pi)
+    return theta_wrapped
+
+def doublependpoincare(sol, t):
+    
+    theta1 = wrapped2(sol[:, 0])
+    omega1 = sol[:, 2]
+    theta2 = wrapped2(sol[:, 1])
+    omega2 = sol[:, 3]
+    
+    theta_times = [[theta1[i], theta1[i + 1], i, i + 1] for i in range(len(t) - 1) \
+                   if (theta1[i] * theta1[i + 1] < 0 and abs(theta1[i]) < 1 and omega1[i] > 0)]
+    
+    interpolated_theta2 = []
+    interpolated_omega2 = []
+    
+    for m in theta_times:
+        interpolated_theta2.append((theta2[m[2]] * m[1] - theta2[m[3]] * m[0]) / (m[1] - m[0]))
+        interpolated_omega2.append((omega2[m[2]] * m[1] - omega2[m[3]] * m[0]) / (m[1] - m[0]))
+        
+    return [interpolated_theta2, interpolated_omega2]
 
 with st.beta_container():
     st.header("Figures")
@@ -310,3 +364,17 @@ with st.beta_container():
         st.pyplot(fig5)
         st.pyplot(fig6)
         
+    elif dropbox == "Poincare Sections":
+        time_taken = st.slider("Total Time", 5000, 50000, 5000)
+        t = np.linspace(0, time_taken, 100001)
+        sol = odeint(derivative, initial1, t)
+
+        x = doublependpoincare(sol, t)[0]
+        y = doublependpoincare(sol, t)[1]
+
+        fig_poincare = plt.figure(figsize=(10, 10))
+        plt.scatter(x, y, s=1, c="m")
+        plt.xlabel(r"$\theta_2$")
+        plt.ylabel(r"$\dot\theta_2$")
+        st.pyplot(fig_poincare)
+
