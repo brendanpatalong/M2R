@@ -44,7 +44,7 @@ p = np.array([m1, m2, l1, l2, g])
 with st.beta_container():
     st.header("Introduction")
     st.markdown("This website is part of our group's M2R research project on the double pendulum at Imperial College London."
-                " Group members include B.Patalong, F.Shang, Y.Zeng, J.Hyrb and M.Peng with project supervisor"
+                " Group members include B. Patalong, F. Shang, Y. Zeng, J. Hryb and M. Peng with project supervisor"
                 " Dr Philip Ramsden. The aim of this project is to discuss further the behaviour of the double pendulum  dynamical system"
                 " and use various mathematical and computational methods to determine under what conditions the system becomes chaotic or"
                 " displays some form of periodicity.")   
