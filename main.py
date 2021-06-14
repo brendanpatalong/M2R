@@ -175,19 +175,10 @@ def wrapped2(theta):
         List of theta values in range -pi to pi
     """
     
-    theta_wrapped = [None] * len(theta)
-    for x in enumerate(theta):
-        if x[1] > 0:
-            if (x[1] % (2 * np.pi)) > np.pi:
-                theta_wrapped[x[0]] = x[1] % (2 * np.pi) -  2 * np.pi
-            else:
-                 theta_wrapped[x[0]] = x[1] % (2 * np.pi)
-        else:
-            if (x[1] % (2 * np.pi)) > np.pi:
-                theta_wrapped[x[0]] = x[1] % (2 * np.pi) -  2 * np.pi
-            else:
-                theta_wrapped[x[0]] = x[1] % (2 * np.pi)
-    return theta_wrapped
+    theta = theta / (2 * np.pi) + 0.5
+    theta = theta - np.floor(theta)
+    theta = 2 * np.pi * (theta - 0.5)
+    return theta
 
 def doublependpoincare(sol, t):
     
@@ -369,12 +360,10 @@ with st.beta_container():
         t = np.linspace(0, time_taken, 100001)
         sol = odeint(derivative, initial1, t)
 
-        x = doublependpoincare(sol, t)[0]
-        y = doublependpoincare(sol, t)[1]
+        x, y = doublependpoincare(sol, t)
 
         fig_poincare = plt.figure(figsize=(10, 10))
         plt.scatter(x, y, s=1, c="m")
         plt.xlabel(r"$\theta_2$")
         plt.ylabel(r"$\dot\theta_2$")
         st.pyplot(fig_poincare)
-
