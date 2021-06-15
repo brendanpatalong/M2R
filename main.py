@@ -18,7 +18,7 @@ if angles == "Radians":
     initial_theta_1 = st.sidebar.number_input("input inital displacement 0f theta 1: "
                                                      , value = np.pi / 2, min_value = - np.pi
                                                      , max_value = np.pi, step = 1e-6)
-    initial_theta_2 = st.sidebar.number_input("input inital displacement 0f theta 1: "
+    initial_theta_2 = st.sidebar.number_input("input inital displacement 0f theta 2: "
                                                      , value = np.pi * 2 / 3, min_value = - np.pi
                                                      , max_value = np.pi, step = 1e-6)
 elif angles == "Degrees":
