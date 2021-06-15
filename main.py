@@ -9,11 +9,11 @@ from scipy.fft import fft, fftfreq
 st.title("A Visualisation of the Double Pendulum")
 st.sidebar.title("List of Parameters")
 angles = st.sidebar.selectbox(label="Angle units", options=("Radians", "Degrees"), index = 0)
-m1 = st.sidebar.number_input("input mass 1: ", min_value = 0, value = 1)
-m2 = st.sidebar.number_input("input mass 2: ", min_value = 0, value = 1)
-l1 = st.sidebar.number_input("input length 1: ", min_value = 0, value = 1)
-l2 = st.sidebar.number_input("input length 2: ", min_value = 0, value = 1)
-g = st.sidebar.number_input("input gravitational field strength: ", value = 9.8)
+m1 = st.sidebar.number_input("input mass 1: ", min_value = 0.00, value = 1.00)
+m2 = st.sidebar.number_input("input mass 2: ", min_value = 0.00, value = 1.00)
+l1 = st.sidebar.number_input("input length 1: ", min_value = 0.00, value = 1.00)
+l2 = st.sidebar.number_input("input length 2: ", min_value = 0.00, value = 1.00)
+g = st.sidebar.number_input("input gravitational field strength: ", value = 9.81)
 if angles == "Radians":
     initial_theta_1 = st.sidebar.number_input("input inital displacement 0f theta 1: "
                                                      , value = np.pi / 2, min_value = - np.pi
